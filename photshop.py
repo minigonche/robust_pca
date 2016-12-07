@@ -12,7 +12,7 @@ import os
 
 
 
-def run_photoshop(input_folder, output_folder, dimensions):
+def run_photoshop(input_folder, output_folder, dimensions, merge_option):
     '''
     input_folder : String	
         The folder name where the images will be imported
@@ -23,7 +23,13 @@ def run_photoshop(input_folder, output_folder, dimensions):
     '''
     
     M = ii.folder_to_matrix(input_folder)
-    mode = np.matrix(np.apply_along_axis(lambda x: stats.mode(x.T)[0], 1, M))
+    if(merge_option.upper() == 'MEAN'):
+        print('Mean')
+        mode = np.matrix(np.apply_along_axis(lambda x: np.mean(x.T), 1, M)).T
+    else:    
+        print('Mode')
+        mode = np.matrix(np.apply_along_axis(lambda x: stats.mode(x.T)[0], 1, M))
+
     L = mode
     for i in range(M.shape[1]-1):
         L = np.hstack((L,mode))
@@ -56,7 +62,7 @@ def run_photoshop(input_folder, output_folder, dimensions):
     
 if __name__ == "__main__":
 	
-	run_photoshop('frames_all', 'frames__ps_out', (90,160))    
+	run_photoshop('frames_all', 'frames__ps_out', (90,160), 'MODE')    
         
     
     

@@ -78,12 +78,14 @@ def run_PCA(input_folder, output_folder, dimensions, eps, max_ite = 3000):
 	Y = np.matrix(np.zeros(M.shape))
 
 	counter = 0
+
+	partial = 1
 	
 
 	tol = eps +1
 
 	try:
-		while( tol > eps and counter < max_ite):
+		while( tol > eps):
 			
 			L = singular_value_tresholding( M - S + mu_1*Y, mu_1) 		
 			S = shrinkage( M - L + mu_1*Y, lamb*mu_1)				
@@ -96,6 +98,34 @@ def run_PCA(input_folder, output_folder, dimensions, eps, max_ite = 3000):
 			print(str(S.max()) + ' ' + str(S.min()))
 			print(tol)
 			print(counter)
+
+			if(counter > max_ite):
+				
+				out_temp = output_folder + '_' + 'partial_' + str(partial)
+
+				if not os.path.exists(out_temp):
+					os.makedirs(out_temp)
+
+				m_out = out_temp + '/' + 'M'
+				l_out = out_temp + '/' + 'L'
+				s_out = out_temp + '/' + 'S'
+				#Creates the output subfolderers
+				if not os.path.exists(m_out):
+					os.makedirs(m_out)
+					
+				if not os.path.exists(l_out):
+					os.makedirs(l_out)
+
+				if not os.path.exists(s_out):
+					os.makedirs(s_out)
+
+				print('Saving Partial Images...')
+				ii.matrix_image_to_frames(np.absolute(M), dimensions, m_out , 'matrix_')
+				ii.matrix_image_to_frames(np.absolute(L), dimensions, l_out , 'low_rank_')
+				ii.matrix_image_to_frames(np.absolute(S), dimensions, s_out , 'sparse_')	
+				print('ok')
+				partial = partial + 1
+				counter = 0
 
 	finally:		
 
@@ -117,7 +147,7 @@ def run_PCA(input_folder, output_folder, dimensions, eps, max_ite = 3000):
 		if not os.path.exists(s_out):
 			os.makedirs(s_out)
 
-		print('saving images...')
+		print('Saving images...')
 		ii.matrix_image_to_frames(np.absolute(M), dimensions, m_out , 'matrix_')
 		ii.matrix_image_to_frames(np.absolute(L), dimensions, l_out , 'low_rank_')
 		ii.matrix_image_to_frames(np.absolute(S), dimensions, s_out , 'sparse_')	
@@ -125,7 +155,7 @@ def run_PCA(input_folder, output_folder, dimensions, eps, max_ite = 3000):
 
 if __name__ == "__main__":
 	
-	run_PCA('frames_all', 'frames_out', (90,160), 1/(10**9),10000)
+	run_PCA('frames_all', 'frames_out', (90,160), 1/(10**9),1000)
 	
     
     
