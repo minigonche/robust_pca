@@ -104,24 +104,29 @@ def run_PCA(input_folder, output_folder, dimensions, eps, max_ite = 3000):
 		if not os.path.exists(output_folder):
 			os.makedirs(output_folder)
 
+		m_out = output_folder + '/' + 'M'
 		l_out = output_folder + '/' + 'L'
 		s_out = output_folder + '/' + 'S'
-		#Creates the output subfolderers	
+		#Creates the output subfolderers
+		if not os.path.exists(m_out):
+			os.makedirs(m_out)
+			
 		if not os.path.exists(l_out):
 			os.makedirs(l_out)
 
 		if not os.path.exists(s_out):
 			os.makedirs(s_out)
 
-		print('saving images...')	
+		print('saving images...')
+		ii.matrix_image_to_frames(np.absolute(M), dimensions, m_out , 'matrix_')
 		ii.matrix_image_to_frames(np.absolute(L), dimensions, l_out , 'low_rank_')
 		ii.matrix_image_to_frames(np.absolute(S), dimensions, s_out , 'sparse_')	
-
+		print('ok')
 
 if __name__ == "__main__":
 	
-	run_PCA('frames_all', 'frames_out', (90,160), 1/(10**9),4000)
-	print('ok')
+	run_PCA('frames_all', 'frames_out', (90,160), 1/(10**9),10000)
+	
     
     
 
