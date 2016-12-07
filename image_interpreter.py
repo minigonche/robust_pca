@@ -40,7 +40,7 @@ def folder_to_matrix(folder_name):
 			#Iterrates over the matrix to find each pixel horizontally
 			for i in range(im.size[1]): #Rows
 				for j in range(im.size[0]): #Columns
-					temp_vector[i*im.size[0] + j] = np.mean(pix[j,i])
+					temp_vector[i*im.size[0] + j] = np.mean(pix[j,i])/255
 
 			if matrix is None:
 				matrix = temp_vector
@@ -76,7 +76,8 @@ def matrix_image_to_frames(matrix, dimensions, folder = 'output', file_name = 't
 
 	#Iterates over the columns of the matrix
 	for i in range(matrix.shape[1]):
-		array = np.matrix(matrix[:,i])		
+		array = np.matrix(matrix[:,i])
+		array = array*255		
 		array.resize(dimensions)
 		im = Image.fromarray(array)
 		im = im.convert('RGB')
@@ -84,21 +85,4 @@ def matrix_image_to_frames(matrix, dimensions, folder = 'output', file_name = 't
 		im.close()
 
 		
-
-
-
-
-'''
-
-print im.size #Get the width and hight of the image for iterating over
-print pix[1,22] #Get the RGBA Value of the a pixel of an image
-'''
-
-
-if __name__ == "__main__":
-	matrix = folder_to_matrix('frames')
-	matrix_image_to_frames(matrix, (180,320), 'saved', 'original')
-	print('ok')
-
-
     
